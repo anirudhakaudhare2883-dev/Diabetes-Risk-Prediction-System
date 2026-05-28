@@ -110,19 +110,6 @@ This project focuses on creating a scalable, accurate, and user-friendly healthc
 
 ---
 
-# 🧠 Machine Learning Pipeline
-
-```mermaid
-graph LR
-A[Dataset Collection] --> B[Data Preprocessing]
-B --> C[Feature Engineering]
-C --> D[SMOTE Balancing]
-D --> E[LightGBM Training]
-E --> F[Model Evaluation]
-F --> G[SHAP & LIME Analysis]
-G --> H[Deployment]
-```
-
 ---
 
 # 📊 Model Performance
