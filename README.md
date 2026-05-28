@@ -154,32 +154,6 @@ G --> H[Deployment]
 
 ---
 
-# 📂 Project Structure
-
-```bash
-Diabetes-Risk-Prediction-System/
-│
-├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
-│   ├── app.py
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── animations/
-│   ├── charts/
-│   └── package.json
-│
-├── dataset/
-├── notebooks/
-├── screenshots/
-├── README.md
-└── .gitignore
-```
 
 ---
 
