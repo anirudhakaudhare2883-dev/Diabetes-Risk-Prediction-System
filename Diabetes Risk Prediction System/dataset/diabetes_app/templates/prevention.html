@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block title %}Prevention Tips — DiabetesAI{% endblock %}
+{% block meta_desc %}Evidence-based diabetes prevention strategies. Learn how to reduce your risk through lifestyle
+modifications, diet changes, and early screening.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .tip-card {
+        background: rgba(35, 25, 60, 0.5);
+        border: 1px solid rgba(124, 58, 237, 0.1);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: all 0.4s;
+    }
+
+    .tip-card:hover {
+        border-color: rgba(124, 58, 237, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px -15px rgba(124, 58, 237, 0.2);
+    }
+
+    .tip-number {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1rem;
+        flex-shrink: 0;
+        font-family: 'Orbitron', monospace;
+    }
+
+    .stat-card {
+        background: rgba(35, 25, 60, 0.4);
+        border: 1px solid rgba(124, 58, 237, 0.08);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .checklist-item {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(124, 58, 237, 0.06);
+    }
+
+    .checklist-item:last-child {
+        border-bottom: none;
+    }
+
+    .section-divider {
+        width: 60px;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #7C3AED, #FF2E93);
+        margin: 0 auto 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="pt-32 pb-12 text-center max-w-4xl mx-auto px-6 relative z-10">
+    <div class="reveal">
+        <a href="/blog"
+            class="text-sm text-text-muted hover:text-white transition-colors mb-4 inline-flex items-center gap-2"
+            style="text-decoration:none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Blog
+        </a>
+        <div class="badge mx-auto mb-6 mt-4" style="color:#A78BFA;">🛡️ Prevention</div>
+        <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4 font-display">
+            Diabetes <span class="neon-text">Prevention</span> Tips
+        </h1>
+        <p class="text-text-muted text-lg max-w-2xl mx-auto">Evidence-based strategies that can reduce your risk of
+            developing Type 2 diabetes by up to 58%.</p>
+    </div>
+</section>
+
+<!-- Key Statistics -->
+<section class="max-w-6xl mx-auto px-6 pb-16 relative z-10">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+        <div class="stat-card">
+            <p class="text-3xl font-black font-display neon-text">58%</p>
+            <p class="text-xs text-text-muted mt-2">Risk reduction with lifestyle changes</p>
+        </div>
+        <div class="stat-card">
+            <p class="text-3xl font-black font-display" style="color:#FF2E93;">537M</p>
+            <p class="text-xs text-text-muted mt-2">People living with diabetes globally</p>
+        </div>
+        <div class="stat-card">
+            <p class="text-3xl font-black font-display" style="color:#06B6D4;">90%</p>
+            <p class="text-xs text-text-muted mt-2">Of diabetes cases are Type 2</p>
+        </div>
+        <div class="stat-card">
+            <p class="text-3xl font-black font-display" style="color:#22C55E;">7%</p>
+            <p class="text-xs text-text-muted mt-2">Body weight loss can prevent diabetes</p>
+        </div>
+    </div>
+</section>
+
+<!-- Prevention Tips Grid -->
+<section class="max-w-6xl mx-auto px-6 pb-20 relative z-10">
+    <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl font-bold text-white font-display mb-3">10 Proven Prevention Strategies</h2>
+        <div class="section-divider"></div>
+        <p class="text-text-muted max-w-xl mx-auto">Based on clinical research from WHO, ADA, and leading medical
+            institutions.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5">
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(124,58,237,0.15);color:#A78BFA;">01</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Maintain a Healthy Weight</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Being overweight is the single biggest risk
+                        factor for Type 2 diabetes. Losing just 5-7% of your body weight can reduce risk by 58%. Focus
+                        on sustainable weight management through balanced nutrition rather than crash diets.</p>
+                    <div class="flex items-center gap-2 mt-3"><span class="badge"
+                            style="background:rgba(34,197,94,0.1);color:#22C55E;font-size:0.65rem;">HIGH IMPACT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(255,46,147,0.12);color:#FF2E93;">02</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Regular Physical Activity</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Exercise helps muscles use glucose for energy,
+                        improving insulin sensitivity. Aim for at least 150 minutes per week of moderate aerobic
+                        activity such as brisk walking, cycling, or swimming.</p>
+                    <div class="flex items-center gap-2 mt-3"><span class="badge"
+                            style="background:rgba(34,197,94,0.1);color:#22C55E;font-size:0.65rem;">HIGH IMPACT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(6,182,212,0.12);color:#06B6D4;">03</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Choose Whole Grains</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Whole grains help maintain steady blood sugar
+                        levels. Replace white rice and refined flour with brown rice, quinoa, oats, and whole wheat.
+                        They provide fiber, which slows glucose absorption.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(168,85,247,0.12);color:#A855F7;">04</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Reduce Sugar Intake</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Excess sugar in diet leads to weight gain and
+                        insulin resistance. Limit sugary beverages, candies, and processed foods. Read nutrition labels
+                        — sugar hides in many unexpected foods like sauces and bread.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(124,58,237,0.15);color:#A78BFA;">05</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Eat More Vegetables & Fruits</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Fill half your plate with non-starchy vegetables.
+                        Leafy greens, broccoli, bell peppers, and berries are excellent choices. They provide essential
+                        nutrients and keep blood sugar stable.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(255,46,147,0.12);color:#FF2E93;">06</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Control Blood Pressure</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">High blood pressure increases the risk of
+                        diabetes complications. Reduce sodium intake, manage stress, exercise regularly, and take
+                        prescribed medications. Target: below 120/80 mmHg.</p>
+                    <div class="flex items-center gap-2 mt-3"><span class="badge"
+                            style="background:rgba(250,204,21,0.1);color:#FACC15;font-size:0.65rem;">MODERATE
+                            IMPACT</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(6,182,212,0.12);color:#06B6D4;">07</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Quit Smoking</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Smokers are 30-40% more likely to develop Type 2
+                        diabetes. Smoking increases inflammation and oxidative stress, damaging cells that produce
+                        insulin. Quitting improves insulin sensitivity within weeks.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(168,85,247,0.12);color:#A855F7;">08</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Manage Cholesterol Levels</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">High LDL ("bad") cholesterol and low HDL ("good")
+                        cholesterol increase diabetes risk. Include healthy fats like olive oil, nuts, and fatty fish.
+                        Get cholesterol checked annually.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(124,58,237,0.15);color:#A78BFA;">09</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Regular Health Screenings</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Get fasting blood glucose tested annually if
+                        you're over 45 or have risk factors. Early detection of prediabetes allows intervention before
+                        full diabetes develops. HbA1c tests measure 3-month average glucose.</p>
+                    <div class="flex items-center gap-2 mt-3"><span class="badge"
+                            style="background:rgba(34,197,94,0.1);color:#22C55E;font-size:0.65rem;">ESSENTIAL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card reveal">
+            <div class="flex gap-4">
+                <div class="tip-number" style="background:rgba(255,46,147,0.12);color:#FF2E93;">10</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2">Limit Alcohol Consumption</h3>
+                    <p class="text-sm text-text-muted leading-relaxed">Excessive alcohol causes weight gain, liver
+                        damage, and disrupts blood sugar regulation. If you drink, limit to 1 drink/day for women and 2
+                        for men. Avoid sugary cocktails and beer.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Daily Checklist -->
+<section class="max-w-4xl mx-auto px-6 pb-20 relative z-10">
+    <div class="glass-card p-8 reveal">
+        <h3 class="text-xl font-bold text-white mb-2 font-display text-center">📋 Daily Prevention Checklist</h3>
+        <div class="section-divider mt-4"></div>
+        <div class="grid md:grid-cols-2 gap-x-8">
+            <div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">30 minutes of physical activity</span></div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span class="text-sm text-text-muted">5
+                        servings of fruits and vegetables</span></div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">Drink 8+ glasses of water</span></div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">Choose whole grains over refined</span></div>
+            </div>
+            <div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">7-8 hours of quality sleep</span></div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">Monitor portion sizes</span></div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">Practice stress management</span></div>
+                <div class="checklist-item"><span style="color:#22C55E;">✓</span><span
+                        class="text-sm text-text-muted">Limit processed food & sugar</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="max-w-4xl mx-auto px-6 pb-20 relative z-10">
+    <div class="glass-card p-10 text-center reveal"
+        style="background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(255,46,147,0.06));">
+        <h3 class="text-2xl font-bold text-white mb-3 font-display">Know Your Risk Level</h3>
+        <p class="text-text-muted mb-6 max-w-lg mx-auto">Take our AI-powered diabetes risk assessment to get
+            personalized insights and recommendations.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/predict" class="btn-neon">🔬 Start Risk Assessment</a>
+            <a href="/blog/lifestyle" class="btn-ghost">🏃 Lifestyle Guide</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+
+{% block title %}AI Health Dashboard — DiabetesAI{% endblock %}
+{% block meta_desc %}
+Your personalized AI diabetes risk assessment results with detailed health insights and recommendations.
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    .gauge-container {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        margin: 0 auto;
+    }
+
+    .gauge-svg {
+        transform: rotate(-90deg);
+    }
+
+    .gauge-track {
+        fill: none;
+        stroke: rgba(124, 58, 237, 0.15);
+        stroke-width: 12;
+    }
+
+    .gauge-fill {
+        fill: none;
+        stroke-width: 12;
+        stroke-linecap: round;
+        stroke-dasharray: 565;
+        stroke-dashoffset: 565;
+        transition: stroke-dashoffset 2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .risk-low {
+        background: rgba(34, 197, 94, 0.15);
+        color: #22C55E;
+        border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .risk-moderate {
+        background: rgba(250, 204, 21, 0.15);
+        color: #FACC15;
+        border-color: rgba(250, 204, 21, 0.3);
+    }
+
+    .risk-high {
+        background: rgba(239, 68, 68, 0.15);
+        color: #EF4444;
+        border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .rec-item {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.875rem;
+        background: rgba(35, 25, 60, 0.45);
+        border-radius: 0.75rem;
+        border: 1px solid rgba(124, 58, 237, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .rec-item:hover {
+        border-color: rgba(124, 58, 237, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .rec-item .icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .bar-fill {
+        height: 8px;
+        border-radius: 4px;
+        transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .metric-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(124, 58, 237, 0.06);
+    }
+
+    .metric-row:last-child {
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pt-28 pb-20 px-4 min-h-screen relative z-10">
+    <div class="max-w-6xl mx-auto">
+
+        <div class="text-center mb-10 reveal">
+            <div class="badge glass-light mx-auto mb-4" style="color:#FF2E93;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+                AI Analysis Complete
+            </div>
+            <h1 class="text-4xl lg:text-5xl font-bold text-white mb-3">Your Health Dashboard</h1>
+            <p class="text-text-muted">Personalized risk assessment powered by LightGBM machine learning model.</p>
+        </div>
+
+        <!-- ===== ROW 1: Gauge + Metrics + Radar ===== -->
+        <div class="grid lg:grid-cols-3 gap-6 mb-6">
+
+            <!-- Gauge Card -->
+            <div class="glass-card p-8 text-center reveal">
+                <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-6">Diabetes Risk Score</p>
+                <div class="gauge-container">
+                    <svg class="gauge-svg" width="220" height="220" viewBox="0 0 200 200">
+                        <circle class="gauge-track" cx="100" cy="100" r="90" />
+                        <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="90"
+                            style="stroke: {% if risk_level=='Low' %}#22C55E{% elif risk_level=='Moderate' %}#FACC15{% else %}#EF4444{% endif %}" />
+                    </svg>
+                    <div class="gauge-center">
+                        <p class="text-5xl font-black text-white" id="scoreValue">0</p>
+                        <p class="text-xs text-text-muted mt-1">out of 100</p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <span
+                        class="badge {% if risk_level=='Low' %}risk-low{% elif risk_level=='Moderate' %}risk-moderate{% else %}risk-high{% endif %}"
+                        style="font-size:0.85rem;padding:0.5rem 1.25rem;border-width:1px;border-style:solid;">
+                        {% if risk_level=='Low' %}✅ Low Risk{% elif risk_level=='Moderate' %}⚠️ Moderate Risk{% else
+                        %}🔴 High Risk{% endif %}
+                    </span>
+                </div>
+                <p class="text-sm text-text-muted mt-4">
+                    Probability: <strong class="text-white">{{ probability }}%</strong>
+                </p>
+            </div>
+
+            <!-- Your Metrics Card -->
+            <div class="glass-card p-7 reveal">
+                <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-5">
+                    📊 Your Metrics
+                </p>
+                <div>
+                    <div class="metric-row">
+                        <span class="text-sm text-text-muted">BMI</span>
+                        <span class="text-sm font-bold text-white">{{ bmi }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="text-sm text-text-muted">BMI Category</span>
+                        <span
+                            class="text-sm font-bold {% if bmi < 18.5 %}text-blue-400{% elif bmi < 25 %}text-green-400{% elif bmi < 30 %}text-yellow-400{% else %}text-red-400{% endif %}">
+                            {% if bmi < 18.5 %}Underweight{% elif bmi < 25 %}Normal{% elif bmi < 30 %}Overweight{% else
+                                %}Obese{% endif %} </span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="text-sm text-text-muted">Age Group</span>
+                        <span class="text-sm font-bold text-white">
+                            {% set age_labels =
+                            {'1':'18-24','2':'25-29','3':'30-34','4':'35-39','5':'40-44','6':'45-49','7':'50-54','8':'55-59','9':'60-64','10':'65-69','11':'70-74','12':'75-79','13':'80+'}
+                            %}
+                            {{ age_labels.get(age_group, age_group) }}
+                        </span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="text-sm text-text-muted">Gender</span>
+                        <span class="text-sm font-bold text-white">{{ 'Male' if sex == '1' else 'Female' }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="text-sm text-text-muted">Model Used</span>
+                        <span class="text-sm font-bold" style="color:#A78BFA;">LightGBM</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="text-sm text-text-muted">Model Accuracy</span>
+                        <span class="text-sm font-bold" style="color:#22C55E;">85.87%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Radar Chart -->
+            <div class="glass-card p-7 reveal">
+                <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-4">
+                    🔬 Health Factor Analysis
+                </p>
+                <div style="max-width:350px;margin:0 auto;">
+                    <canvas id="radarChart" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ROW 2: Risk Factor Breakdown Bars ===== -->
+        <div class="glass-card p-8 mb-6 reveal">
+            <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-6">
+                📈 Risk Factor Breakdown
+            </p>
+            <div id="riskBreakdown" class="grid md:grid-cols-2 gap-x-8 gap-y-4">
+                <!-- Populated by JS from featureData -->
+            </div>
+        </div>
+
+        <!-- ===== ROW 3: Recommendations ===== -->
+        <div class="glass-card p-8 mb-6 reveal">
+            <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-6">
+                {% if risk_level == 'High' %}⚠️ Critical{% elif risk_level == 'Moderate' %}📋 Important{% else %}✅
+                Healthy{% endif %} Recommendations
+            </p>
+            <div class="grid md:grid-cols-2 gap-3">
+                {% if risk_level == 'High' %}
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(239,68,68,0.15);">🏥</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">See a Doctor</p>
+                        <p class="text-xs text-text-muted">Schedule a diabetes screening with your healthcare provider
+                            immediately.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(239,68,68,0.15);">🩸</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Blood Sugar Test</p>
+                        <p class="text-xs text-text-muted">Get fasting glucose and HbA1c tests done as soon as possible.
+                        </p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(255,46,147,0.12);">🥗</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Dietary Changes</p>
+                        <p class="text-xs text-text-muted">Reduce sugar, refined carbs, and processed foods immediately.
+                        </p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(34,197,94,0.12);">🏃</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Exercise Daily</p>
+                        <p class="text-xs text-text-muted">Start with 30 minutes of moderate exercise daily to improve
+                            insulin sensitivity.</p>
+                    </div>
+                </div>
+                {% elif risk_level == 'Moderate' %}
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(250,204,21,0.12);">📋</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Regular Checkups</p>
+                        <p class="text-xs text-text-muted">Schedule annual diabetes screenings with your healthcare
+                            provider.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(124,58,237,0.12);">⚖️</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Manage Weight</p>
+                        <p class="text-xs text-text-muted">Maintain a healthy BMI through balanced diet and regular
+                            exercise.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(34,197,94,0.12);">🥦</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Improve Diet</p>
+                        <p class="text-xs text-text-muted">Increase vegetables, whole grains, and lean proteins in your
+                            diet.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(6,182,212,0.12);">🏃</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Stay Active</p>
+                        <p class="text-xs text-text-muted">Aim for 150 minutes of moderate physical activity per week.
+                        </p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(34,197,94,0.12);">✅</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Great Health!</p>
+                        <p class="text-xs text-text-muted">Your current lifestyle supports good health. Keep it up!</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(124,58,237,0.12);">🔄</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Annual Screening</p>
+                        <p class="text-xs text-text-muted">Continue routine health checkups for early detection
+                            awareness.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(6,182,212,0.12);">🥗</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Balanced Diet</p>
+                        <p class="text-xs text-text-muted">Continue eating a balanced diet with plenty of fruits and
+                            vegetables.</p>
+                    </div>
+                </div>
+                <div class="rec-item">
+                    <div class="icon" style="background:rgba(34,197,94,0.12);">💪</div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Stay Active</p>
+                        <p class="text-xs text-text-muted">Maintain your physical activity routine for long-term health
+                            benefits.</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ===== ROW 4: Action Buttons ===== -->
+        <div class="flex flex-wrap gap-4 mb-6 reveal">
+            <a href="/predict" class="btn-neon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 4v6h6M23 20v-6h-6" />
+                    <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
+                </svg>
+                Retake Assessment
+            </a>
+            <a href="/blog/diet" class="btn-ghost">🥗 View Diet Guide</a>
+            <a href="/bmi" class="btn-ghost">⚖️ BMI Calculator</a>
+            <a href="/blog/early-signs" class="btn-ghost">🔍 Early Signs</a>
+        </div>
+
+        <!-- ===== Disclaimer ===== -->
+        <div class="glass-card p-4 reveal" style="border-radius:0.75rem; border-color: rgba(250,204,21,0.15);">
+            <p class="text-xs text-text-muted text-center">
+                ⚕️ <strong class="text-yellow-400">Medical Disclaimer:</strong>
+                This AI assessment is for educational purposes only. It does not replace professional medical diagnosis.
+                Please consult a qualified healthcare professional for medical advice.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Pass data from Jinja to JS via HTML data attributes (formatter-safe) -->
+<div id="resultData" style="display:none" data-score="{{ risk_score }}"></div>
+<script id="featureData" type="application/json">{{ feature_scores | tojson }}</script>
+
+<script>
+    // ---- Gauge Animation ----
+    (function () {
+        var score = parseInt(document.getElementById('resultData').dataset.score);
+        var circumference = 2 * Math.PI * 90;
+        var offset = circumference - (score / 100) * circumference;
+
+        setTimeout(function () {
+            document.getElementById('gaugeFill').style.strokeDashoffset = offset;
+        }, 300);
+
+        var current = 0;
+        var step = score / 50;
+        var timer = setInterval(function () {
+            current += step;
+            if (current >= score) {
+                document.getElementById('scoreValue').textContent = score;
+                clearInterval(timer);
+            } else {
+                document.getElementById('scoreValue').textContent = Math.floor(current);
+            }
+        }, 30);
+    })();
+
+    // ---- Radar Chart ----
+    (function () {
+        var ctx = document.getElementById('radarChart').getContext('2d');
+        var featureScores = JSON.parse(document.getElementById('featureData').textContent);
+        var labels = Object.keys(featureScores);
+        var data = Object.values(featureScores);
+
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Risk Factors',
+                    data: data,
+                    backgroundColor: 'rgba(124, 58, 237, 0.12)',
+                    borderColor: '#7C3AED',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#FF2E93',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 1,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        angleLines: { color: 'rgba(124,58,237,0.08)' },
+                        grid: { color: 'rgba(124,58,237,0.08)' },
+                        pointLabels: { color: '#94A3B8', font: { size: 10, family: 'Space Grotesk' } },
+                        ticks: { display: false }
+                    }
+                }
+            }
+        });
+
+        // ---- Risk Breakdown Bars ----
+        var container = document.getElementById('riskBreakdown');
+        var barColors = ['#7C3AED', '#FF2E93', '#06B6D4', '#A855F7', '#22D3EE', '#C084FC'];
+        labels.forEach(function (label, i) {
+            var color = barColors[i % barColors.length];
+            var val = data[i];
+            var div = document.createElement('div');
+            div.innerHTML =
+                '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+                '<span class="text-sm text-text-muted">' + label + '</span>' +
+                '<span class="text-sm font-bold text-white">' + val + '%</span>' +
+                '</div>' +
+                '<div style="width:100%;height:8px;border-radius:4px;background:rgba(124,58,237,0.1);">' +
+                '<div class="bar-fill" id="bar-' + i + '" style="width:0%;background:' + color + ';box-shadow:0 0 8px ' + color + '40;"></div>' +
+                '</div>';
+            container.appendChild(div);
+        });
+
+        // Animate bars after a delay
+        setTimeout(function () {
+            labels.forEach(function (_, i) {
+                var bar = document.getElementById('bar-' + i);
+                if (bar) bar.style.width = data[i] + '%';
+            });
+        }, 500);
+    })();
+</script>
+{% endblock %}

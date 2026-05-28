@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Diet Guide — DiabetesAI{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-12 max-w-5xl mx-auto px-6 relative z-10">
+    <div class="reveal">
+        <a href="/blog" class="text-sm text-text-muted hover:text-primary-light transition-colors"
+            style="text-decoration:none">← Back to Blog</a>
+        <div class="flex items-center gap-2 mt-4 mb-4">
+            <span class="badge" style="background:rgba(0,245,212,0.12);color:#00F5D4;font-size:0.7rem;">Nutrition</span>
+            <span class="text-xs text-text-muted">5 min read • By Anirudha</span>
+        </div>
+        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4 font-display">Diet to Prevent Diabetes</h1>
+        <p class="text-text-muted text-lg">A healthy diet is one of the most powerful tools to prevent type 2 diabetes.
+        </p>
+    </div>
+</section>
+
+<section class="max-w-5xl mx-auto px-6 pb-20 relative z-10">
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
+        <div class="glass-card p-7 reveal glow-border">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style="background:rgba(0,245,212,0.12);">✅</div>
+                <h2 class="text-lg font-bold text-white">Recommended Foods</h2>
+            </div>
+            <div class="space-y-3">
+                {% for emoji, food, desc in [('🌾','Whole Grains','Oats, brown rice, quinoa — high in
+                fiber'),('🥬','Leafy Greens','Spinach, kale, broccoli — low GI'),('🍎','Fresh Fruits','Berries, apples,
+                citrus — in moderation'),('🥜','Nuts & Seeds','Almonds, walnuts, flaxseed — healthy fats'),('🐟','Lean
+                Proteins','Fish, chicken, legumes'),('🫘','Legumes','Lentils, chickpeas, beans — protein + fiber')] %}
+                <div class="flex items-center gap-3 p-3 rounded-lg"
+                    style="background:rgba(0,245,212,0.04);border:1px solid rgba(0,245,212,0.06);">
+                    <span class="text-xl">{{ emoji }}</span>
+                    <div>
+                        <p class="text-sm font-semibold text-white">{{ food }}</p>
+                        <p class="text-xs text-text-muted">{{ desc }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="glass-card p-7 reveal glow-border">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style="background:rgba(247,37,133,0.12);">🚫</div>
+                <h2 class="text-lg font-bold text-white">Foods to Limit</h2>
+            </div>
+            <div class="space-y-3">
+                {% for emoji, food, desc in [('🥤','Sugary Drinks','Sodas, juices, energy drinks — spike blood
+                sugar'),('🍞','Refined Carbs','White bread, pastries — low fiber'),('🍟','Deep Fried Foods','French
+                fries, fried chicken — trans fats'),('🍫','Processed Snacks','Chips, cookies, candy — empty
+                calories'),('🧁','Excess Sweets','Cakes, ice cream, donuts'),('🥓','Processed Meats','Bacon, sausage —
+                high sodium & fat')] %}
+                <div class="flex items-center gap-3 p-3 rounded-lg"
+                    style="background:rgba(247,37,133,0.04);border:1px solid rgba(247,37,133,0.06);">
+                    <span class="text-xl">{{ emoji }}</span>
+                    <div>
+                        <p class="text-sm font-semibold text-white">{{ food }}</p>
+                        <p class="text-xs text-text-muted">{{ desc }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-8 mb-12 reveal">
+        <div class="text-center mb-8">
+            <div class="badge mx-auto mb-3" style="color:#FACC15;">📅 Sample Plan</div>
+            <h2 class="text-2xl font-bold text-white font-display">Daily Meal Plan</h2>
+        </div>
+        <div class="grid md:grid-cols-5 gap-4">
+            {% for time, meal, items, emoji in [('7 AM','Breakfast','Oatmeal with berries, Greek yogurt, green
+            tea','🌅'),('10 AM','Snack','Handful of almonds, an apple','🍏'),('1 PM','Lunch','Grilled chicken salad,
+            brown rice, vegetables','🥗'),('4 PM','Snack','Carrot sticks with hummus','🥕'),('7 PM','Dinner','Baked
+            salmon, quinoa, steamed broccoli','🍽️')] %}
+            <div class="text-center p-4 rounded-xl"
+                style="background:rgba(20,20,50,0.5);border:1px solid rgba(108,99,255,0.06);">
+                <span class="text-2xl block mb-2">{{ emoji }}</span>
+                <p class="text-xs text-text-muted mb-1">{{ time }}</p>
+                <p class="text-sm font-semibold text-white mb-2">{{ meal }}</p>
+                <p class="text-xs text-text-muted leading-relaxed">{{ items }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="glass-card p-8 mb-12 reveal">
+        <h2 class="text-xl font-bold text-white mb-6">💡 Healthy Eating Tips</h2>
+        <div class="grid md:grid-cols-2 gap-4">
+            {% for tip in ['Eat smaller portions at regular intervals to maintain stable blood sugar','Avoid late-night
+            heavy meals — eat dinner 2+ hours before bed','Stay hydrated — drink 8+ glasses of water daily','Read
+            nutrition labels for sugar and carb content','Use grilling, baking, steaming instead of frying','Include
+            fiber-rich foods with every meal'] %}
+            <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(108,99,255,0.04);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00F5D4" stroke-width="2.5"
+                    style="margin-top:2px;flex-shrink:0;">
+                    <path d="M20 6L9 17l-5-5" />
+                </svg>
+                <p class="text-sm text-text-muted">{{ tip }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="text-center reveal">
+        <a href="/predict" class="btn-neon" style="padding:1rem 2rem;">🤖 Check Your Diabetes Risk Now</a>
+    </div>
+</section>
+{% endblock %}

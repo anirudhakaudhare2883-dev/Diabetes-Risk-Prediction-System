@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+{% block title %}Healthy Lifestyle Guide — DiabetesAI{% endblock %}
+{% block meta_desc %}Comprehensive guide to a healthy lifestyle for diabetes prevention. Covers exercise, sleep, stress
+management, hydration, and daily habits.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .lifestyle-card {
+        background: rgba(35, 25, 60, 0.5);
+        border: 1px solid rgba(124, 58, 237, 0.1);
+        border-radius: 1.25rem;
+        overflow: hidden;
+        transition: all 0.4s;
+    }
+
+    .lifestyle-card:hover {
+        border-color: rgba(124, 58, 237, 0.3);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 50px -15px rgba(124, 58, 237, 0.2);
+    }
+
+    .lifestyle-card .card-header {
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .lifestyle-card .card-body {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .icon-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+    }
+
+    .habit-item {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.65rem 0;
+        border-bottom: 1px solid rgba(124, 58, 237, 0.05);
+    }
+
+    .habit-item:last-child {
+        border-bottom: none;
+    }
+
+    .habit-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .section-divider {
+        width: 60px;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, #7C3AED, #FF2E93);
+        margin: 0 auto 2rem;
+    }
+
+    .week-plan {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+    }
+
+    .week-day {
+        background: rgba(35, 25, 60, 0.5);
+        border: 1px solid rgba(124, 58, 237, 0.08);
+        border-radius: 10px;
+        padding: 0.75rem 0.5rem;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .week-day:hover {
+        border-color: rgba(124, 58, 237, 0.3);
+    }
+
+    .quote-card {
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(255, 46, 147, 0.08));
+        border: 1px solid rgba(124, 58, 237, 0.15);
+        border-radius: 1.25rem;
+        padding: 2rem;
+        position: relative;
+    }
+
+    .quote-card::before {
+        content: '"';
+        position: absolute;
+        top: 10px;
+        left: 20px;
+        font-size: 4rem;
+        color: rgba(124, 58, 237, 0.2);
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<section class="pt-32 pb-12 text-center max-w-4xl mx-auto px-6 relative z-10">
+    <div class="reveal">
+        <a href="/blog"
+            class="text-sm text-text-muted hover:text-white transition-colors mb-4 inline-flex items-center gap-2"
+            style="text-decoration:none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Blog
+        </a>
+        <div class="badge mx-auto mb-6 mt-4" style="color:#FACC15;">🏃 Lifestyle</div>
+        <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4 font-display">
+            Healthy <span class="neon-text">Lifestyle</span> Guide
+        </h1>
+        <p class="text-text-muted text-lg max-w-2xl mx-auto">How physical activity, quality sleep, stress management,
+            and daily habits can dramatically reduce your diabetes risk.</p>
+    </div>
+</section>
+
+<!-- Motivational Quote -->
+<section class="max-w-4xl mx-auto px-6 pb-12 relative z-10">
+    <div class="quote-card reveal">
+        <p class="text-lg text-white font-medium italic pl-8">"An ounce of prevention is worth a pound of cure. Small
+            daily habits compound into life-changing results."</p>
+        <p class="text-sm text-text-muted mt-3 pl-8">— Based on WHO Diabetes Prevention Guidelines</p>
+    </div>
+</section>
+
+<!-- 6 Lifestyle Pillars -->
+<section class="max-w-6xl mx-auto px-6 pb-20 relative z-10">
+    <div class="text-center mb-12 reveal">
+        <h2 class="text-3xl font-bold text-white font-display mb-3">6 Pillars of a Healthy Lifestyle</h2>
+        <div class="section-divider"></div>
+        <p class="text-text-muted max-w-xl mx-auto">Each pillar plays a crucial role in diabetes prevention and overall
+            well-being.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Pillar 1: Exercise -->
+        <div class="lifestyle-card reveal">
+            <div class="card-header">
+                <div class="icon-circle" style="background:rgba(124,58,237,0.15);">🏋️</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Physical Activity</h3>
+                    <span class="text-xs text-text-muted">150 min/week recommended</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-sm text-text-muted leading-relaxed mb-4">Regular exercise improves insulin sensitivity by
+                    up to 50%. It helps your muscles absorb glucose without needing extra insulin.</p>
+                <div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#7C3AED;"></div><span
+                            class="text-sm text-text-muted">Brisk walking — 30 min daily</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#FF2E93;"></div><span
+                            class="text-sm text-text-muted">Strength training — 2x per week</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#06B6D4;"></div><span
+                            class="text-sm text-text-muted">Take stairs instead of lifts</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#A855F7;"></div><span
+                            class="text-sm text-text-muted">Stand every 30 min if desk job</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pillar 2: Sleep -->
+        <div class="lifestyle-card reveal">
+            <div class="card-header">
+                <div class="icon-circle" style="background:rgba(255,46,147,0.12);">😴</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Quality Sleep</h3>
+                    <span class="text-xs text-text-muted">7-9 hours per night</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-sm text-text-muted leading-relaxed mb-4">Poor sleep disrupts hormones that regulate blood
+                    sugar. People sleeping less than 6 hours have 40% higher diabetes risk.</p>
+                <div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#FF2E93;"></div><span
+                            class="text-sm text-text-muted">Fixed bedtime & wake time</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#7C3AED;"></div><span
+                            class="text-sm text-text-muted">No screens 1 hour before bed</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#06B6D4;"></div><span
+                            class="text-sm text-text-muted">Cool, dark, quiet bedroom</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#A855F7;"></div><span
+                            class="text-sm text-text-muted">Avoid caffeine after 2 PM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pillar 3: Stress Management -->
+        <div class="lifestyle-card reveal">
+            <div class="card-header">
+                <div class="icon-circle" style="background:rgba(6,182,212,0.12);">🧘</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Stress Management</h3>
+                    <span class="text-xs text-text-muted">Cortisol raises blood sugar</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-sm text-text-muted leading-relaxed mb-4">Chronic stress triggers cortisol release, which
+                    raises blood sugar and promotes fat storage around the abdomen — a key diabetes risk factor.</p>
+                <div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#06B6D4;"></div><span
+                            class="text-sm text-text-muted">10 min daily meditation</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#7C3AED;"></div><span
+                            class="text-sm text-text-muted">Deep breathing exercises</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#FF2E93;"></div><span
+                            class="text-sm text-text-muted">Nature walks & fresh air</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#A855F7;"></div><span
+                            class="text-sm text-text-muted">Social connections & hobbies</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pillar 4: Hydration -->
+        <div class="lifestyle-card reveal">
+            <div class="card-header">
+                <div class="icon-circle" style="background:rgba(168,85,247,0.12);">💧</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Proper Hydration</h3>
+                    <span class="text-xs text-text-muted">8+ glasses daily</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-sm text-text-muted leading-relaxed mb-4">Water helps kidneys flush excess glucose.
+                    Dehydration concentrates blood sugar levels. Replace sugary drinks with water, herbal tea, or
+                    infused water.</p>
+                <div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#A855F7;"></div><span
+                            class="text-sm text-text-muted">Start day with a glass of water</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#7C3AED;"></div><span
+                            class="text-sm text-text-muted">Carry a reusable water bottle</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#06B6D4;"></div><span
+                            class="text-sm text-text-muted">Replace soda with water</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#FF2E93;"></div><span
+                            class="text-sm text-text-muted">Drink before you feel thirsty</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pillar 5: Mental Wellness -->
+        <div class="lifestyle-card reveal">
+            <div class="card-header">
+                <div class="icon-circle" style="background:rgba(124,58,237,0.15);">🧠</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Mental Wellness</h3>
+                    <span class="text-xs text-text-muted">Mind-body connection</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-sm text-text-muted leading-relaxed mb-4">Depression increases diabetes risk by 60%.
+                    Mental health directly affects eating habits, exercise motivation, and stress hormones. Prioritize
+                    your mental well-being.</p>
+                <div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#7C3AED;"></div><span
+                            class="text-sm text-text-muted">Gratitude journaling</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#FF2E93;"></div><span
+                            class="text-sm text-text-muted">Regular social interaction</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#06B6D4;"></div><span
+                            class="text-sm text-text-muted">Seek professional support</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#A855F7;"></div><span
+                            class="text-sm text-text-muted">Mindful eating practices</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pillar 6: Routine -->
+        <div class="lifestyle-card reveal">
+            <div class="card-header">
+                <div class="icon-circle" style="background:rgba(255,46,147,0.12);">📅</div>
+                <div>
+                    <h3 class="text-lg font-bold text-white">Consistent Routine</h3>
+                    <span class="text-xs text-text-muted">Regularity is key</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="text-sm text-text-muted leading-relaxed mb-4">A consistent daily routine stabilizes your
+                    body's circadian rhythm, improving hormone regulation and blood sugar control. Small daily habits
+                    compound over time.</p>
+                <div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#FF2E93;"></div><span
+                            class="text-sm text-text-muted">Eat meals at same times</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#7C3AED;"></div><span
+                            class="text-sm text-text-muted">Morning sunlight exposure</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#06B6D4;"></div><span
+                            class="text-sm text-text-muted">Set exercise reminders</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-dot" style="background:#A855F7;"></div><span
+                            class="text-sm text-text-muted">Weekly health check-in</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Weekly Exercise Plan -->
+<section class="max-w-4xl mx-auto px-6 pb-20 relative z-10">
+    <div class="glass-card p-8 reveal">
+        <h3 class="text-xl font-bold text-white mb-2 font-display text-center">🗓️ Sample Weekly Exercise Plan</h3>
+        <div class="section-divider mt-4"></div>
+        <div class="week-plan">
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#7C3AED;">MON</p>
+                <p class="text-2xl mt-1">🚶</p>
+                <p class="text-xs text-text-muted mt-1">Brisk Walk</p>
+                <p class="text-xs" style="color:#A78BFA;">30 min</p>
+            </div>
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#FF2E93;">TUE</p>
+                <p class="text-2xl mt-1">🏋️</p>
+                <p class="text-xs text-text-muted mt-1">Strength</p>
+                <p class="text-xs" style="color:#FF2E93;">25 min</p>
+            </div>
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#06B6D4;">WED</p>
+                <p class="text-2xl mt-1">🚴</p>
+                <p class="text-xs text-text-muted mt-1">Cycling</p>
+                <p class="text-xs" style="color:#06B6D4;">30 min</p>
+            </div>
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#A855F7;">THU</p>
+                <p class="text-2xl mt-1">🧘</p>
+                <p class="text-xs text-text-muted mt-1">Yoga</p>
+                <p class="text-xs" style="color:#A855F7;">30 min</p>
+            </div>
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#7C3AED;">FRI</p>
+                <p class="text-2xl mt-1">🏊</p>
+                <p class="text-xs text-text-muted mt-1">Swimming</p>
+                <p class="text-xs" style="color:#7C3AED;">30 min</p>
+            </div>
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#FF2E93;">SAT</p>
+                <p class="text-2xl mt-1">🏋️</p>
+                <p class="text-xs text-text-muted mt-1">Strength</p>
+                <p class="text-xs" style="color:#FF2E93;">25 min</p>
+            </div>
+            <div class="week-day">
+                <p class="text-xs font-bold" style="color:#22C55E;">SUN</p>
+                <p class="text-2xl mt-1">😌</p>
+                <p class="text-xs text-text-muted mt-1">Rest Day</p>
+                <p class="text-xs" style="color:#22C55E;">Stretch</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="max-w-4xl mx-auto px-6 pb-20 relative z-10">
+    <div class="glass-card p-10 text-center reveal"
+        style="background:linear-gradient(135deg,rgba(124,58,237,0.1),rgba(6,182,212,0.06));">
+        <h3 class="text-2xl font-bold text-white mb-3 font-display">Ready to Take Action?</h3>
+        <p class="text-text-muted mb-6 max-w-lg mx-auto">Check your current diabetes risk and get personalized
+            recommendations based on your health profile.</p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="/predict" class="btn-neon">🔬 Start Risk Assessment</a>
+            <a href="/blog/prevention" class="btn-ghost">🛡️ Prevention Tips</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

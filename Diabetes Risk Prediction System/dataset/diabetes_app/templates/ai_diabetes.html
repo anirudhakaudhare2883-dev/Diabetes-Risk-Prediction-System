@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}AI in Diabetes Prediction — DiabetesAI{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-8 max-w-4xl mx-auto px-6 relative z-10">
+  <div class="reveal">
+    <a href="/blog" class="text-sm text-text-muted hover:text-primary-light transition-colors"
+      style="text-decoration:none">← Back to Blog</a>
+    <div class="flex items-center gap-2 mt-4 mb-4">
+      <span class="badge" style="background:rgba(108,99,255,0.12);color:#8B83FF;font-size:0.7rem;">AI & Tech</span>
+      <span class="text-xs text-text-muted">6 min read • By Anirudha</span>
+    </div>
+    <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4 font-display">AI in Diabetes Prediction</h1>
+    <p class="text-text-muted text-lg leading-relaxed max-w-2xl">Artificial Intelligence is transforming healthcare by
+      detecting disease risks early.</p>
+  </div>
+</section>
+
+<section class="max-w-4xl mx-auto px-6 pb-20 relative z-10">
+  <div class="glass-card overflow-hidden mb-10 reveal" style="padding:0;">
+    <img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=800&q=80" class="w-full h-64 object-cover"
+      alt="AI Healthcare">
+  </div>
+
+  <div class="grid lg:grid-cols-4 gap-8">
+    <div class="lg:col-span-1 hidden lg:block">
+      <div class="sticky top-28 space-y-2">
+        <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-3">Contents</p>
+        {% for id, label in [('how-ai','How AI Predicts'),('ml-role','Machine Learning'),('pipeline','AI
+        Pipeline'),('benefits','Benefits'),('future','Future of AI')] %}
+        <a href="#{{ id }}" class="block text-sm text-text-muted hover:text-primary-light transition-colors py-1"
+          style="text-decoration:none;border-left:2px solid rgba(108,99,255,0.08);padding-left:0.75rem;">{{ label }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="lg:col-span-3 space-y-10">
+      <div class="reveal">
+        <p class="text-text-muted leading-relaxed">AI systems analyze large volumes of health data to identify patterns
+          humans might miss. This enables earlier detection of diabetes risk, potentially saving millions of lives.</p>
+      </div>
+
+      <div class="reveal" id="how-ai">
+        <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+            style="background:rgba(108,99,255,0.12);color:#8B83FF;">1</span>How AI Predicts Diabetes
+        </h2>
+        <div class="glass-card p-6">
+          <div class="grid md:grid-cols-2 gap-4">
+            {% for e, t, d in [('📊','Analyzes Health Data','BMI, blood pressure, cholesterol, and lifestyle
+            simultaneously'),('🔍','Finds Hidden Patterns','Detects non-obvious correlations between health risk
+            factors'),('📈','Calculates Probability','Generates precise risk scores for each
+            individual'),('🔄','Continuous Learning','Improves prediction accuracy as more data becomes available')] %}
+            <div class="flex items-start gap-3 p-3 rounded-lg" style="background:rgba(20,20,50,0.5);">
+              <span class="text-xl">{{ e }}</span>
+              <div>
+                <p class="text-sm font-semibold text-white">{{ t }}</p>
+                <p class="text-xs text-text-muted">{{ d }}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" id="ml-role">
+        <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+            style="background:rgba(139,131,255,0.12);color:#A78BFA;">2</span>Role of Machine Learning
+        </h2>
+        <div class="text-sm text-text-muted leading-relaxed space-y-4">
+          <p>Models like <strong class="text-white">LightGBM</strong> learn from past patient data, recognizing patterns
+            linked to diabetes to predict new cases with high accuracy.</p>
+          <p>Our model was trained on the <strong class="text-white">CDC's BRFSS</strong> dataset with 50,000+ records,
+            achieving <strong class="accent-text">85.87% accuracy</strong> and <strong class="accent-text">AUC-ROC
+              0.742</strong>.</p>
+        </div>
+      </div>
+
+      <div class="reveal" id="pipeline">
+        <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+            style="background:rgba(0,245,212,0.12);color:#00F5D4;">3</span>AI Prediction Pipeline
+        </h2>
+        <div class="glass-card p-6">
+          <div class="flex flex-col md:flex-row items-center gap-4 text-center">
+            {% for step, color in [('Data Collection','#8B83FF'),('Preprocessing','#A78BFA'),('Feature
+            Engineering','#00F5D4'),('Model Training','#FACC15'),('Prediction','#F72585')] %}
+            <div class="flex-1 p-4 rounded-xl" style="background:rgba(20,20,50,0.5);">
+              <div class="w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center"
+                style="background:{{ color }}20;">
+                <div class="w-3 h-3 rounded-full" style="background:{{ color }};box-shadow:0 0 10px {{ color }}60;">
+                </div>
+              </div>
+              <p class="text-xs font-semibold text-white">{{ step }}</p>
+            </div>
+            {% if not loop.last %}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555577"
+              stroke-width="2" class="hidden md:block flex-shrink-0">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>{% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" id="benefits">
+        <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+            style="background:rgba(250,204,21,0.12);color:#FACC15;">4</span>Benefits in Healthcare
+        </h2>
+        <div class="grid md:grid-cols-2 gap-4">
+          {% for e, t, d in [('❤️','Early Detection Saves Lives','Catching risk before symptoms enables preventive
+          intervention'),('🏥','Reduces Hospital Burden','Preventive care reduces emergency
+          admissions'),('👨‍⚕️','Supports Clinical Decisions','Provides data-driven insights for healthcare
+          professionals'),('🌍','Promotes Preventive Care','Shifts healthcare focus from treatment to prevention')] %}
+          <div class="glass-card p-5 glow-border">
+            <span class="text-xl block mb-2">{{ e }}</span>
+            <p class="text-sm font-semibold text-white mb-1">{{ t }}</p>
+            <p class="text-xs text-text-muted">{{ d }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="reveal" id="future">
+        <h2 class="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+          <span class="w-8 h-8 rounded-lg flex items-center justify-center text-sm"
+            style="background:rgba(247,37,133,0.12);color:#F72585;">5</span>Future of AI in Medicine
+        </h2>
+        <div class="text-sm text-text-muted leading-relaxed space-y-4">
+          <p>AI will continue to assist doctors — not replace them. Its purpose is to provide faster insights, reduce
+            diagnostic errors, and improve healthcare accessibility worldwide.</p>
+          <p>Future developments include real-time glucose monitoring with AI, wearable device integration, and
+            personalized treatment plans generated by deep learning.</p>
+        </div>
+      </div>
+
+      <div class="text-center reveal pt-6">
+        <a href="/predict" class="btn-neon" style="padding:1rem 2rem;">🤖 Try Our AI Risk Predictor</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

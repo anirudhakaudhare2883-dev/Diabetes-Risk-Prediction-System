@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Health Blog — DiabetesAI{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-12 text-center max-w-5xl mx-auto px-6 relative z-10">
+    <div class="reveal">
+        <div class="badge mx-auto mb-6" style="color:#C4B5FD;">📚 Health Resources</div>
+        <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4 font-display">
+            Diabetes & <span class="neon-text">AI Insights</span>
+        </h1>
+        <p class="text-text-muted text-lg max-w-2xl mx-auto">Evidence-based articles on diabetes prevention, AI in
+            healthcare, and practical health guidance.</p>
+    </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 pb-20 relative z-10">
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for href, img, tag, tag_col, tag_bg, read, title, desc in [
+        ('/blog/early-signs','https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80','Health','#F72585','rgba(247,37,133,0.12)','5
+        min','Early Signs of Diabetes','Recognizing warning signs early can prevent serious complications.'),
+        ('/blog/ai-diabetes','https://images.unsplash.com/photo-1581595219315-a187dd40c322?w=600&q=80','AI &
+        Tech','#8B83FF','rgba(108,99,255,0.12)','6 min','AI in Diabetes Prediction','How ML models analyze hidden
+        patterns in health data.'),
+        ('/blog/diet','https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80','Nutrition','#00F5D4','rgba(0,245,212,0.12)','5
+        min','Diet to Prevent Diabetes','Smart food choices to control blood sugar levels.')
+        ] %}
+        <a href="{{ href }}" class="glass-card overflow-hidden group reveal glow-border"
+            style="text-decoration:none;padding:0;">
+            <div class="h-48 overflow-hidden">
+                <img src="{{ img }}"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    alt="{{ title }}">
+            </div>
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="badge" style="background:{{ tag_bg }};color:{{ tag_col }};font-size:0.7rem;">{{ tag
+                        }}</span>
+                    <span class="text-xs text-text-muted">{{ read }} read</span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary-light transition-colors">{{ title
+                    }}</h3>
+                <p class="text-sm text-text-muted leading-relaxed">{{ desc }}</p>
+                <div class="flex items-center gap-2 mt-4 text-xs font-medium" style="color:#FF2E93;">
+                    Read Article <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+
+        <a href="/blog/prevention" class="glass-card overflow-hidden group reveal glow-border"
+            style="text-decoration:none;padding:0;">
+            <div class="h-48 flex items-center justify-center"
+                style="background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(255,46,147,0.1));">
+                <span style="font-size:4rem;">🛡️</span>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="badge"
+                        style="background:rgba(139,131,255,0.12);color:#A78BFA;font-size:0.7rem;">Prevention</span>
+                    <span class="text-xs text-text-muted">4 min read</span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary-light transition-colors">
+                    Prevention Tips</h3>
+                <p class="text-sm text-text-muted leading-relaxed">Evidence-based strategies to reduce diabetes risk
+                    through lifestyle changes.</p>
+                <div class="flex items-center gap-2 mt-4 text-xs font-medium" style="color:#FF2E93;">Read Article <svg
+                        width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg></div>
+            </div>
+        </a>
+
+        <a href="/blog/lifestyle" class="glass-card overflow-hidden group reveal glow-border"
+            style="text-decoration:none;padding:0;">
+            <div class="h-48 flex items-center justify-center"
+                style="background:linear-gradient(135deg,rgba(255,46,147,0.12),rgba(6,182,212,0.08));">
+                <span style="font-size:4rem;">🏃</span>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="badge"
+                        style="background:rgba(250,204,21,0.12);color:#FACC15;font-size:0.7rem;">Lifestyle</span>
+                    <span class="text-xs text-text-muted">3 min read</span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-2 group-hover:text-primary-light transition-colors">Healthy
+                    Lifestyle Guide</h3>
+                <p class="text-sm text-text-muted leading-relaxed">How physical activity, sleep, and stress management
+                    contribute to prevention.</p>
+                <div class="flex items-center gap-2 mt-4 text-xs font-medium" style="color:#FF2E93;">Read Article <svg
+                        width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg></div>
+            </div>
+        </a>
+
+        <div class="glass-card p-8 flex flex-col justify-center items-center text-center reveal glow-border"
+            style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(255,46,147,0.05));">
+            <span style="font-size:3rem;display:block;margin-bottom:1rem;">🤖</span>
+            <h3 class="text-lg font-bold text-white mb-2">Check Your Risk</h3>
+            <p class="text-sm text-text-muted mb-6">Use our AI model to assess your diabetes risk in under 60 seconds.
+            </p>
+            <a href="/predict" class="btn-neon" style="padding:0.75rem 1.5rem;">Start Assessment →</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

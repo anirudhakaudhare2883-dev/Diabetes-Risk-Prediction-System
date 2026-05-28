@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Symptom Checker — DiabetesAI{% endblock %}
+
+{% block extra_head %}
+<style>
+  .symptom-card {
+    background: rgba(20, 20, 50, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    user-select: none;
+  }
+
+  .symptom-card:hover {
+    border-color: rgba(108, 99, 255, 0.2);
+  }
+
+  .symptom-card.checked {
+    border-color: #F72585;
+    background: rgba(247, 37, 133, 0.06);
+    box-shadow: 0 0 25px -8px rgba(247, 37, 133, 0.25);
+  }
+
+  .symptom-card .check-box {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    flex-shrink: 0;
+  }
+
+  .symptom-card.checked .check-box {
+    background: #F72585;
+    border-color: #F72585;
+  }
+
+  .risk-meter {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(108, 99, 255, 0.08);
+    overflow: hidden;
+  }
+
+  .risk-meter-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s, background 0.5s;
+    width: 0%;
+    background: #00F5D4;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pt-32 pb-8 max-w-5xl mx-auto px-6 relative z-10">
+  <div class="reveal">
+    <a href="/blog" class="text-sm text-text-muted hover:text-primary-light transition-colors"
+      style="text-decoration:none">← Back to Blog</a>
+    <div class="flex items-center gap-2 mt-4 mb-4">
+      <span class="badge" style="background:rgba(247,37,133,0.12);color:#F72585;font-size:0.7rem;">Health Check</span>
+      <span class="text-xs text-text-muted">Interactive Tool</span>
+    </div>
+    <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4 font-display">Early Signs of Diabetes</h1>
+    <p class="text-text-muted text-lg">Select any symptoms you're experiencing to see a risk indicator.</p>
+  </div>
+</section>
+
+<section class="max-w-5xl mx-auto px-6 pb-20 relative z-10">
+  <div class="grid lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <div class="glass-card p-7 mb-8 reveal">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(247,37,133,0.12);">
+            🩺</div>
+          <div>
+            <h2 class="text-lg font-bold text-white">Interactive Symptom Checker</h2>
+            <p class="text-xs text-text-muted">Select symptoms you are currently experiencing</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3" id="sGrid">
+          {% for s, d, w in [('Frequent Thirst','Constant dryness and need for water',15),('Frequent Urination','Needing
+          to urinate much more often',15),('Constant Fatigue','Persistent tiredness even after rest',12),('Blurred
+          Vision','Difficulty focusing or seeing clearly',10),('Slow Healing Wounds','Cuts and bruises heal unusually
+          slowly',12),('Unexplained Weight Loss','Losing weight without trying',10),('Tingling in Hands/Feet','Numbness
+          or pins-and-needles',8),('Dark Skin Patches','Darker patches on neck/armpits',8),('Increased Hunger','Feeling
+          hungry shortly after eating',5),('Recurring Infections','Frequent yeast or urinary infections',5)] %}
+          <div class="symptom-card" onclick="toggleS(this,{{ w }})" data-w="{{ w }}">
+            <div class="check-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white"
+                stroke-width="3" style="display:none">
+                <path d="M20 6L9 17l-5-5" />
+              </svg></div>
+            <div>
+              <p class="text-sm font-semibold text-white">{{ s }}</p>
+              <p class="text-xs text-text-muted">{{ d }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="glass-card p-7 reveal">
+        <h2 class="text-lg font-bold text-white mb-4">Why These Symptoms Occur</h2>
+        <div class="space-y-4 text-sm text-text-muted leading-relaxed">
+          <p>High blood sugar affects how the body uses glucose. When glucose can't enter cells, the body feels tired
+            and tries to remove excess sugar through urine, causing dehydration and thirst.</p>
+          <h3 class="text-base font-bold text-white mt-6 mb-2">When to See a Doctor</h3>
+          <p>If multiple symptoms persist for more than 2 weeks, schedule a medical consultation. Early screening
+            through fasting glucose and HbA1c tests can catch pre-diabetes early.</p>
+        </div>
+      </div>
+    </div>
+    <div class="lg:col-span-1">
+      <div class="glass-card p-6 sticky top-28 reveal">
+        <p class="text-xs font-semibold text-text-muted uppercase tracking-widest mb-4">Risk Indicator</p>
+        <div class="text-center mb-6">
+          <p class="text-5xl font-black text-white font-display" id="rPct">0%</p>
+          <p class="text-sm mt-1 font-semibold" id="rLbl" style="color:#00F5D4;">No Symptoms Selected</p>
+        </div>
+        <div class="risk-meter mb-6">
+          <div class="risk-meter-fill" id="rMeter"></div>
+        </div>
+        <div class="space-y-2 mb-6">
+          <div class="flex justify-between text-xs"><span class="text-text-muted">Selected</span><span
+              class="text-white font-bold" id="sCnt">0 / 10</span></div>
+          <div class="flex justify-between text-xs"><span class="text-text-muted">Severity</span><span
+              class="text-white font-bold" id="sLvl">None</span></div>
+        </div>
+        <div class="p-3 rounded-lg text-xs text-text-muted"
+          style="background:rgba(250,204,21,0.04);border:1px solid rgba(250,204,21,0.08);">⚠️ Educational indicator
+          only. Consult a doctor for proper screening.</div>
+        <a href="/predict" class="btn-neon w-full justify-center mt-4" style="padding:0.75rem;">Get Full AI Assessment
+          →</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  let tw = 0, cc = 0;
+  function toggleS(c, w) {
+    c.classList.toggle('checked'); const svg = c.querySelector('svg');
+    const on = c.classList.contains('checked'); svg.style.display = on ? 'block' : 'none';
+    tw += on ? w : -w; cc += on ? 1 : -1; updateR();
+  }
+  function updateR() {
+    const p = Math.min(100, Math.round(tw));
+    document.getElementById('rPct').textContent = p + '%';
+    document.getElementById('sCnt').textContent = cc + ' / 10';
+    const m = document.getElementById('rMeter'); m.style.width = p + '%';
+    let l, c, s;
+    if (p === 0) { l = 'No Symptoms Selected'; c = '#00F5D4'; s = 'None'; }
+    else if (p < 25) { l = 'Low Concern'; c = '#00F5D4'; s = 'Mild'; }
+    else if (p < 50) { l = 'Moderate Concern'; c = '#FACC15'; s = 'Moderate'; }
+    else if (p < 75) { l = 'Elevated Concern'; c = '#F97316'; s = 'High'; }
+    else { l = 'High Concern'; c = '#F72585'; s = 'Very High'; }
+    document.getElementById('rLbl').textContent = l; document.getElementById('rLbl').style.color = c;
+    document.getElementById('sLvl').textContent = s; m.style.background = c;
+  }
+</script>
+{% endblock %}

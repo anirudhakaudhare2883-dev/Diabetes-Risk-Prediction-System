@@ -1,0 +1,559 @@
+{% extends "base.html" %}
+
+{% block title %}AI Risk Assessment — DiabetesAI{% endblock %}
+
+{% block extra_head %}
+<style>
+        .step-container {
+                display: none;
+        }
+
+        .step-container.active {
+                display: block;
+                animation: fadeStep 0.5s ease;
+        }
+
+        @keyframes fadeStep {
+                from {
+                        opacity: 0;
+                        transform: translateX(25px);
+                }
+
+                to {
+                        opacity: 1;
+                        transform: translateX(0);
+                }
+        }
+
+        .progress-track {
+                width: 100%;
+                height: 4px;
+                background: rgba(108, 99, 255, 0.12);
+                border-radius: 2px;
+                overflow: hidden;
+        }
+
+        .progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #6C63FF, #00F5D4);
+                border-radius: 2px;
+                transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toggle-group {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+        }
+
+        .toggle-card {
+                background: rgba(20, 20, 50, 0.4);
+                border: 1px solid rgba(255, 255, 255, 0.04);
+                border-radius: 1rem;
+                padding: 1rem 1.25rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+        }
+
+        .toggle-card:hover {
+                border-color: rgba(108, 99, 255, 0.25);
+        }
+
+        .toggle-card.selected {
+                border-color: #6C63FF;
+                background: rgba(108, 99, 255, 0.08);
+                box-shadow: 0 0 25px -8px rgba(108, 99, 255, 0.3);
+        }
+
+        .toggle-card .icon-wrap {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.2rem;
+                flex-shrink: 0;
+        }
+
+        .toggle-card .label {
+                font-size: 0.875rem;
+                font-weight: 500;
+                color: #B8B3FF;
+        }
+
+        .toggle-card.selected .label {
+                color: #F0F0FF;
+        }
+
+        .range-slider {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 6px;
+                background: rgba(108, 99, 255, 0.15);
+                border-radius: 3px;
+                outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 22px;
+                height: 22px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, #6C63FF, #00F5D4);
+                cursor: pointer;
+                box-shadow: 0 0 15px rgba(108, 99, 255, 0.5);
+        }
+
+        .custom-select {
+                width: 100%;
+                padding: 0.875rem 1rem;
+                background: rgba(20, 20, 50, 0.5);
+                border: 1px solid rgba(108, 99, 255, 0.08);
+                border-radius: 0.75rem;
+                color: #F0F0FF;
+                font-size: 0.9rem;
+                outline: none;
+                transition: border-color 0.3s;
+                -webkit-appearance: none;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888AA' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 1rem center;
+        }
+
+        .custom-select:focus {
+                border-color: #6C63FF;
+        }
+
+        .custom-select option {
+                background: #14142E;
+                color: #F0F0FF;
+        }
+
+        .custom-input {
+                width: 100%;
+                padding: 0.875rem 1rem;
+                background: rgba(20, 20, 50, 0.5);
+                border: 1px solid rgba(108, 99, 255, 0.08);
+                border-radius: 0.75rem;
+                color: #F0F0FF;
+                font-size: 0.9rem;
+                outline: none;
+                transition: border-color 0.3s;
+        }
+
+        .custom-input:focus {
+                border-color: #6C63FF;
+        }
+
+        .field-label {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #8888AA;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.375rem;
+        }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pt-28 pb-20 px-4 min-h-screen relative z-10">
+        <div class="max-w-3xl mx-auto">
+
+                <div class="text-center mb-10 reveal">
+                        <div class="badge mx-auto mb-4" style="color:#00F5D4;">
+                                <div class="pulse-dot"></div>
+                                AI Health Assessment
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-3 font-display">Diabetes Risk Assessment
+                        </h1>
+                        <p class="text-text-muted max-w-lg mx-auto">Answer a few health questions and our AI model will
+                                analyze your risk in real‑time.</p>
+                </div>
+
+                {% if error %}
+                <div class="glass-card p-4 mb-6 text-center"
+                        style="border-color:rgba(247,37,133,0.3);background:rgba(247,37,133,0.08);">
+                        <p class="text-sm font-medium" style="color:#F72585;">⚠️ {{ error }}</p>
+                </div>
+                {% endif %}
+
+                <div class="glass-card p-6 mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                                <div class="flex gap-2">
+                                        {% for s in [1,2,3,4] %}
+                                        <span class="step-indicator text-xs font-bold px-3 py-1 rounded-full"
+                                                data-step="{{ s }}"
+                                                style="background:{% if s == 1 %}linear-gradient(135deg,#6C63FF,#00F5D4);color:white{% else %}rgba(108,99,255,0.15);color:#B8B3FF{% endif %};">{{
+                                                s }}</span>
+                                        {% endfor %}
+                                </div>
+                                <span class="text-xs text-text-muted" id="stepLabel">Step 1 of 4 — Health History</span>
+                        </div>
+                        <div class="progress-track">
+                                <div class="progress-fill" id="progressFill" style="width:25%"></div>
+                        </div>
+                </div>
+
+                <form method="POST" id="predictForm">
+                        <div class="glass-card p-8">
+
+                                <!-- STEP 1: Health History -->
+                                <div class="step-container active" data-step="1">
+                                        <div class="flex items-center gap-3 mb-6">
+                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                                                        style="background:rgba(108,99,255,0.15);">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#8B83FF" stroke-width="2">
+                                                                <path
+                                                                        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                                        </svg>
+                                                </div>
+                                                <div>
+                                                        <h2 class="text-xl font-bold text-white">Health History</h2>
+                                                        <p class="text-xs text-text-muted">Medical background and
+                                                                conditions</p>
+                                                </div>
+                                        </div>
+                                        <div class="space-y-5">
+                                                {% for name, label, tip, emoji in [
+                                                ('HighBP','High Blood Pressure','Systolic ≥ 140 mmHg or diastolic ≥ 90
+                                                mmHg','🩸'),
+                                                ('HighChol','High Cholesterol','Total cholesterol ≥ 240 mg/dL','🧪'),
+                                                ('CholCheck','Cholesterol Check (Last 5y)','Cholesterol check in past 5
+                                                years?','🔬'),
+                                                ('Stroke','History of Stroke','Ever been told you had a stroke?','🧠'),
+                                                ('HeartDiseaseorAttack','Heart Disease / Attack','Coronary heart disease
+                                                or myocardial infarction','❤️')
+                                                ] %}
+                                                <div>
+                                                        <div class="field-label tooltip">{{ emoji }} {{ label }}
+                                                                <svg width="13" height="13" viewBox="0 0 24 24"
+                                                                        fill="none" stroke="#555577" stroke-width="2">
+                                                                        <circle cx="12" cy="12" r="10" />
+                                                                        <path d="M12 16v-4M12 8h.01" />
+                                                                </svg>
+                                                                <span class="tooltip-text">{{ tip }}</span>
+                                                        </div>
+                                                        <div class="toggle-group">
+                                                                <label class="toggle-card"
+                                                                        onclick="selectToggle(this,'{{ name }}','1')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(247,37,133,0.1);">
+                                                                                ⚠️</div><span class="label">Yes</span>
+                                                                </label>
+                                                                <label class="toggle-card selected"
+                                                                        onclick="selectToggle(this,'{{ name }}','0')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(0,245,212,0.1);">
+                                                                                ✅</div><span class="label">No</span>
+                                                                </label>
+                                                        </div>
+                                                        <input type="hidden" name="{{ name }}" value="0">
+                                                </div>
+                                                {% endfor %}
+                                        </div>
+                                </div>
+
+                                <!-- STEP 2: Lifestyle -->
+                                <div class="step-container" data-step="2">
+                                        <div class="flex items-center gap-3 mb-6">
+                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                                                        style="background:rgba(0,245,212,0.12);">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#00F5D4" stroke-width="2">
+                                                                <path
+                                                                        d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
+                                                        </svg>
+                                                </div>
+                                                <div>
+                                                        <h2 class="text-xl font-bold text-white">Lifestyle Factors</h2>
+                                                        <p class="text-xs text-text-muted">Daily habits and activities
+                                                        </p>
+                                                </div>
+                                        </div>
+                                        <div class="space-y-5">
+                                                {% for name, label, tip, emoji in [
+                                                ('Smoker','Smoker','Smoked at least 100 cigarettes in your life?','🚬'),
+                                                ('PhysActivity','Physically Active','Physical activity in past 30
+                                                days?','🏃'),
+                                                ('Fruits','Eat Fruits Regularly','Consume fruits 1+ times per
+                                                day?','🍎'),
+                                                ('Veggies','Eat Vegetables Regularly','Consume vegetables 1+ times per
+                                                day?','🥦'),
+                                                ('HvyAlcoholConsump','Heavy Alcohol Use','Men: >14 drinks/week, Women:
+                                                >7','🍺'),
+                                                ('AnyHealthcare','Healthcare Coverage','Any health insurance or
+                                                plan?','🏥'),
+                                                ('NoDocbcCost','Avoided Doctor Due to Cost','Needed a doctor but could
+                                                not afford?','💰')
+                                                ] %}
+                                                <div>
+                                                        <div class="field-label tooltip">{{ emoji }} {{ label }}
+                                                                <svg width="13" height="13" viewBox="0 0 24 24"
+                                                                        fill="none" stroke="#555577" stroke-width="2">
+                                                                        <circle cx="12" cy="12" r="10" />
+                                                                        <path d="M12 16v-4M12 8h.01" />
+                                                                </svg>
+                                                                <span class="tooltip-text">{{ tip }}</span>
+                                                        </div>
+                                                        <div class="toggle-group">
+                                                                <label class="toggle-card"
+                                                                        onclick="selectToggle(this,'{{ name }}','1')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(108,99,255,0.1);">
+                                                                                👍</div><span class="label">Yes</span>
+                                                                </label>
+                                                                <label class="toggle-card selected"
+                                                                        onclick="selectToggle(this,'{{ name }}','0')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(80,80,110,0.15);">
+                                                                                👎</div><span class="label">No</span>
+                                                                </label>
+                                                        </div>
+                                                        <input type="hidden" name="{{ name }}" value="0">
+                                                </div>
+                                                {% endfor %}
+                                        </div>
+                                </div>
+
+                                <!-- STEP 3: Health Status -->
+                                <div class="step-container" data-step="3">
+                                        <div class="flex items-center gap-3 mb-6">
+                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                                                        style="background:rgba(247,37,133,0.12);">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#F72585" stroke-width="2">
+                                                                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                                        </svg>
+                                                </div>
+                                                <div>
+                                                        <h2 class="text-xl font-bold text-white">Health Status</h2>
+                                                        <p class="text-xs text-text-muted">Current physical and mental
+                                                                health</p>
+                                                </div>
+                                        </div>
+                                        <div class="space-y-6">
+                                                <div>
+                                                        <div class="field-label">🏥 General Health</div>
+                                                        <select name="GenHlth" class="custom-select">
+                                                                <option value="1">⭐ Excellent</option>
+                                                                <option value="2">✨ Very Good</option>
+                                                                <option value="3" selected>👍 Good</option>
+                                                                <option value="4">😐 Fair</option>
+                                                                <option value="5">😟 Poor</option>
+                                                        </select>
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">💪 Physical Health (poor days in last
+                                                                30)</div>
+                                                        <div class="flex items-center gap-4">
+                                                                <input type="range" name="PhysHlth" min="0" max="30"
+                                                                        value="0" class="range-slider flex-1"
+                                                                        oninput="this.nextElementSibling.textContent=this.value+' days'">
+                                                                <span class="text-sm text-text-muted font-medium"
+                                                                        style="min-width:60px">0 days</span>
+                                                        </div>
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">🧠 Mental Health (poor days in last 30)
+                                                        </div>
+                                                        <div class="flex items-center gap-4">
+                                                                <input type="range" name="MentHlth" min="0" max="30"
+                                                                        value="0" class="range-slider flex-1"
+                                                                        oninput="this.nextElementSibling.textContent=this.value+' days'">
+                                                                <span class="text-sm text-text-muted font-medium"
+                                                                        style="min-width:60px">0 days</span>
+                                                        </div>
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">🚶 Difficulty Walking / Climbing Stairs
+                                                        </div>
+                                                        <div class="toggle-group">
+                                                                <label class="toggle-card"
+                                                                        onclick="selectToggle(this,'DiffWalk','1')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(247,37,133,0.1);">
+                                                                                ⚠️</div><span class="label">Yes</span>
+                                                                </label>
+                                                                <label class="toggle-card selected"
+                                                                        onclick="selectToggle(this,'DiffWalk','0')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(0,245,212,0.1);">
+                                                                                ✅</div><span class="label">No</span>
+                                                                </label>
+                                                        </div>
+                                                        <input type="hidden" name="DiffWalk" value="0">
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- STEP 4: Demographics -->
+                                <div class="step-container" data-step="4">
+                                        <div class="flex items-center gap-3 mb-6">
+                                                <div class="w-10 h-10 rounded-xl flex items-center justify-center"
+                                                        style="background:rgba(255,107,107,0.12);">
+                                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                                stroke="#FF6B6B" stroke-width="2">
+                                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                                                <circle cx="12" cy="7" r="4" />
+                                                        </svg>
+                                                </div>
+                                                <div>
+                                                        <h2 class="text-xl font-bold text-white">Demographics</h2>
+                                                        <p class="text-xs text-text-muted">Personal information</p>
+                                                </div>
+                                        </div>
+                                        <div class="space-y-6">
+                                                <div>
+                                                        <div class="field-label">👤 Gender</div>
+                                                        <div class="toggle-group">
+                                                                <label class="toggle-card selected"
+                                                                        onclick="selectToggle(this,'Sex','1')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(108,99,255,0.1);">
+                                                                                ♂️</div><span class="label">Male</span>
+                                                                </label>
+                                                                <label class="toggle-card"
+                                                                        onclick="selectToggle(this,'Sex','0')">
+                                                                        <div class="icon-wrap"
+                                                                                style="background:rgba(247,37,133,0.1);">
+                                                                                ♀️</div><span
+                                                                                class="label">Female</span>
+                                                                </label>
+                                                        </div>
+                                                        <input type="hidden" name="Sex" value="1">
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">📅 Age Range</div>
+                                                        <select name="Age" class="custom-select">
+                                                                {% for i,label in
+                                                                [('1','18–24'),('2','25–29'),('3','30–34'),('4','35–39'),('5','40–44'),('6','45–49'),('7','50–54'),('8','55–59'),('9','60–64'),('10','65–69'),('11','70–74'),('12','75–79'),('13','80+')]
+                                                                %}
+                                                                <option value="{{ i }}">{{ label }}</option>
+                                                                {% endfor %}
+                                                        </select>
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">⚖️ BMI (Body Mass Index)</div>
+                                                        <input type="number" step="0.1" name="BMI"
+                                                                placeholder="e.g. 24.5" class="custom-input" required>
+                                                        <a href="/bmi"
+                                                                class="text-xs mt-2 inline-flex items-center gap-1 transition-colors"
+                                                                style="text-decoration:none;color:#00F5D4;"
+                                                                target="_blank">
+                                                                ⚖️ Don't know your BMI? Calculate here →
+                                                        </a>
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">🎓 Education Level</div>
+                                                        <select name="Education" class="custom-select">
+                                                                <option value="1">No Formal Education</option>
+                                                                <option value="2">Elementary</option>
+                                                                <option value="3">Some High School</option>
+                                                                <option value="4" selected>High School Graduate</option>
+                                                                <option value="5">College / University</option>
+                                                                <option value="6">Postgraduate</option>
+                                                        </select>
+                                                </div>
+                                                <div>
+                                                        <div class="field-label">💼 Annual Income Level</div>
+                                                        <select name="Income" class="custom-select">
+                                                                <option value="1">Below ₹2L</option>
+                                                                <option value="2">₹2–3L</option>
+                                                                <option value="3">₹3–4L</option>
+                                                                <option value="4">₹4–5L</option>
+                                                                <option value="5" selected>₹5–7L</option>
+                                                                <option value="6">₹7–10L</option>
+                                                                <option value="7">₹10–15L</option>
+                                                                <option value="8">₹15L+</option>
+                                                        </select>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- Nav Buttons -->
+                                <div class="flex justify-between items-center mt-8 pt-6"
+                                        style="border-top:1px solid rgba(108,99,255,0.08);">
+                                        <button type="button" id="prevBtn" class="btn-ghost"
+                                                style="display:none;padding:0.75rem 1.5rem;" onclick="changeStep(-1)">
+                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                                                </svg>Previous
+                                        </button>
+                                        <div></div>
+                                        <button type="button" id="nextBtn" class="btn-neon"
+                                                style="padding:0.75rem 1.5rem;" onclick="changeStep(1)">
+                                                Next Step <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M5 12h14M12 5l7 7-7 7" />
+                                                </svg>
+                                        </button>
+                                        <button type="submit" id="submitBtn" class="btn-neon"
+                                                style="display:none;padding:0.75rem 1.5rem;background:linear-gradient(135deg,#00F5D4,#00B894);">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2">
+                                                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                                </svg>Analyze My Risk
+                                        </button>
+                                </div>
+
+                        </div>
+                </form>
+        </div>
+</section>
+
+<div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p class="text-lg font-semibold text-white font-display">AI is analyzing your health data...</p>
+        <div class="loading-bar">
+                <div class="loading-bar-fill"></div>
+        </div>
+        <p class="text-sm text-text-muted">Processing 21 health parameters</p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+        let currentStep = 1; const totalSteps = 4;
+        const stepLabels = ['Health History', 'Lifestyle', 'Health Status', 'Demographics'];
+
+        function changeStep(dir) {
+                const next = currentStep + dir;
+                if (next < 1 || next > totalSteps) return;
+                document.querySelector(`.step-container[data-step="${currentStep}"]`).classList.remove('active');
+                document.querySelector(`.step-container[data-step="${next}"]`).classList.add('active');
+                currentStep = next;
+                document.getElementById('progressFill').style.width = (currentStep / totalSteps * 100) + '%';
+                document.getElementById('stepLabel').textContent = `Step ${currentStep} of ${totalSteps} — ${stepLabels[currentStep - 1]}`;
+                document.querySelectorAll('.step-indicator').forEach(ind => {
+                        const s = parseInt(ind.dataset.step);
+                        if (s <= currentStep) { ind.style.background = 'linear-gradient(135deg,#6C63FF,#00F5D4)'; ind.style.color = 'white'; }
+                        else { ind.style.background = 'rgba(108,99,255,0.15)'; ind.style.color = '#B8B3FF'; }
+                });
+                document.getElementById('prevBtn').style.display = currentStep > 1 ? 'inline-flex' : 'none';
+                document.getElementById('nextBtn').style.display = currentStep < totalSteps ? 'inline-flex' : 'none';
+                document.getElementById('submitBtn').style.display = currentStep === totalSteps ? 'inline-flex' : 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectToggle(el, name, value) {
+                el.parentElement.querySelectorAll('.toggle-card').forEach(c => c.classList.remove('selected'));
+                el.classList.add('selected');
+                document.querySelector(`input[name="${name}"]`).value = value;
+        }
+
+        document.getElementById('predictForm').addEventListener('submit', function () {
+                document.getElementById('loadingOverlay').classList.add('active');
+        });
+</script>
+{% endblock %}

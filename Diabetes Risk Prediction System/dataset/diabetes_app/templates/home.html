@@ -1,0 +1,696 @@
+{% extends "base.html" %}
+
+{% block title %}DiabetesAI — Elevating Health Prediction{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ----- Premium Starfield Canvas ----- */
+  #starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ----- Ambient Lighting ----- */
+  .ambient-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: screen;
+  }
+
+  /* ----- Hero Section ----- */
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 20px 6px 6px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    background: rgba(11, 7, 22, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: #E2E8F0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+  }
+
+  .hero-badge:hover {
+    border-color: rgba(124, 58, 237, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 30px rgba(124, 58, 237, 0.2);
+  }
+
+  .hero-badge .tag {
+    background: linear-gradient(135deg, #7C3AED, #FF2E93);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-title {
+    font-size: clamp(3.5rem, 8vw, 6.5rem);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-title .highlight {
+    background: linear-gradient(135deg, #7C3AED 0%, #FF2E93 50%, #06B6D4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease infinite;
+    background-size: 200% 200%;
+  }
+
+  .hero-sub {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: #94A3B8;
+    font-weight: 400;
+    max-width: 600px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ----- Premium Figma-style Glass Cards ----- */
+  .premium-card {
+    background: linear-gradient(180deg, rgba(30, 20, 50, 0.4) 0%, rgba(20, 15, 35, 0.2) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 24px;
+    padding: 2rem;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .premium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(124, 58, 237, 0.1), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .premium-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.15);
+  }
+
+  .premium-card:hover::before {
+    opacity: 1;
+  }
+
+  /* ----- Feature Pills ----- */
+  .pill-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .feature-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px 8px 8px;
+    border-radius: 100px;
+    background: rgba(15, 10, 25, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #cbd5e1;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .feature-pill:hover {
+    background: rgba(25, 15, 40, 0.8);
+    border-color: rgba(124, 58, 237, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .feature-pill .icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(124, 58, 237, 0.2);
+    font-size: 1rem;
+  }
+
+  /* ----- Stat Showcase ----- */
+  .stat-showcase {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2.5rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .stat-showcase:last-child {
+    border-right: none;
+  }
+
+  .stat-num {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .stat-label {
+    font-size: 0.95rem;
+    color: #94A3B8;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-top: 1rem;
+  }
+
+  /* ----- Buttons ----- */
+  .btn-premium {
+    background: linear-gradient(135deg, #7C3AED, #FF2E93);
+    color: white;
+    padding: 1.15rem 2.5rem;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 10px 30px -10px rgba(255, 46, 147, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: none;
+    outline: none;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-premium::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.6s;
+  }
+
+  .btn-premium:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px -10px rgba(255, 46, 147, 0.7), 0 0 20px rgba(124, 58, 237, 0.4);
+  }
+
+  .btn-premium:hover::after {
+    left: 150%;
+  }
+
+  .btn-outline-premium {
+    background: rgba(15, 10, 25, 0.5);
+    color: #E2E8F0;
+    padding: 1.15rem 2.5rem;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+  }
+
+  .btn-outline-premium:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Scroll Down Indicator */
+  .scroll-down {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #64748b;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .scroll-down .mouse {
+    width: 22px;
+    height: 34px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    position: relative;
+  }
+
+  .scroll-down .wheel {
+    width: 4px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll 1.5s infinite;
+  }
+
+  @keyframes scroll {
+    0% {
+      opacity: 1;
+      top: 6px;
+    }
+
+    100% {
+      opacity: 0;
+      top: 16px;
+    }
+  }
+
+  @keyframes gradient-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ======== PREMIUM WARP SPEED STARFIELD ======== -->
+<canvas id="starfield"></canvas>
+
+<!-- Ambient Lights -->
+<div class="ambient-glow" style="background:#7C3AED; width:60rem; height:60rem; top:-20rem; left:-20rem; opacity:0.15;">
+</div>
+<div class="ambient-glow"
+  style="background:#FF2E93; width:40rem; height:40rem; bottom:-10rem; right:-10rem; opacity:0.1;"></div>
+<div class="ambient-glow" style="background:#06B6D4; width:50rem; height:50rem; top:40%; left:60%; opacity:0.08;"></div>
+
+<!-- ======== HERO SECTION ======== -->
+<section class="min-h-screen flex flex-col items-center justify-center relative pt-24 pb-20 px-4">
+  <div class="max-w-5xl mx-auto text-center z-10 w-full">
+
+    <div class="hero-badge mb-10 mx-auto reveal">
+      <span class="tag">New Version 2.0</span>
+      Advanced Clinical AI Engine
+    </div>
+
+    <h1 class="hero-title mb-8 font-display reveal">
+      Intelligence that <br>
+      <span class="highlight">Predicts Health</span>
+    </h1>
+
+    <p class="hero-sub mx-auto mb-12 reveal" style="transition-delay: 0.1s;">
+      Harness the power of machine learning trained on <strong class="text-white">50,000+</strong> clinical records. Get
+      an enterprise-grade diabetes risk analysis in under 60 seconds.
+    </p>
+
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-5 mb-16 reveal"
+      style="transition-delay: 0.2s;">
+      <a href="/predict" class="btn-premium">
+        Start Risk Assessment
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+      <a href="/about" class="btn-outline-premium">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        View Methodology
+      </a>
+    </div>
+
+    <div class="pill-container reveal" style="transition-delay: 0.3s;">
+      <div class="feature-pill">
+        <div class="icon" style="color:#A78BFA;">⚡</div> Instant Results
+      </div>
+      <div class="feature-pill">
+        <div class="icon" style="color:#FF2E93;">🧠</div> LightGBM Model
+      </div>
+      <div class="feature-pill">
+        <div class="icon" style="color:#06B6D4;">🔒</div> Privacy First
+      </div>
+      <div class="feature-pill">
+        <div class="icon" style="color:#22C55E;">✓</div> Clinical Accuracy
+      </div>
+    </div>
+
+  </div>
+
+  <div class="scroll-down reveal" style="transition-delay: 0.5s;">
+    <div class="mouse">
+      <div class="wheel"></div>
+    </div>
+    Scroll
+  </div>
+</section>
+
+<!-- ======== STATS SECTION ======== -->
+<section class="py-24 relative z-10 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="premium-card p-0 reveal">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/5">
+        <div class="stat-showcase text-center">
+          <div class="stat-num"
+            style="background:linear-gradient(180deg,#fff,#cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+            <span class="counter" data-target="85">0</span><span class="text-3xl text-slate-500">.8%</span></div>
+          <div class="stat-label uppercase tracking-widest text-xs">Prediction Accuracy</div>
+        </div>
+        <div class="stat-showcase text-center">
+          <div class="stat-num"
+            style="background:linear-gradient(180deg,#fff,#cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+            <span class="counter" data-target="21">0</span></div>
+          <div class="stat-label uppercase tracking-widest text-xs">Biomarkers Analyzed</div>
+        </div>
+        <div class="stat-showcase text-center">
+          <div class="stat-num"
+            style="background:linear-gradient(180deg,#fff,#cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+            <span class="counter" data-target="50">0</span><span class="text-3xl text-slate-500">K+</span></div>
+          <div class="stat-label uppercase tracking-widest text-xs">Training Records</div>
+        </div>
+        <div class="stat-showcase text-center">
+          <div class="stat-num"
+            style="background:linear-gradient(180deg,#fff,#cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+            &lt;<span class="counter" data-target="1">0</span><span class="text-3xl text-slate-500">s</span></div>
+          <div class="stat-label uppercase tracking-widest text-xs">Analysis Time</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== PREMIUM FEATURES GRID ======== -->
+<section class="py-24 relative z-10 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-20 reveal">
+      <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6 font-display tracking-tight">Enterprise-Grade <span
+          style="color:#A78BFA">Diagnostics</span></h2>
+      <p class="text-text-muted text-lg max-w-2xl mx-auto leading-relaxed">Designed for precision. Built for humans. Our
+        platform bridges the gap between complex machine learning and actionable health insights.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Card 1 -->
+      <div class="premium-card reveal">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+          style="background:linear-gradient(135deg, rgba(124,58,237,0.2), rgba(124,58,237,0.05)); border:1px solid rgba(124,58,237,0.3); box-shadow: 0 10px 20px rgba(124,58,237,0.1);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2">
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-3 tracking-tight">Gradient Boosting</h3>
+        <p class="text-slate-400 leading-relaxed">Powered by LightGBM, a high-performance framework that handles massive
+          datasets with unparalleled accuracy.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="premium-card reveal" style="transition-delay: 0.1s;">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+          style="background:linear-gradient(135deg, rgba(255,46,147,0.2), rgba(255,46,147,0.05)); border:1px solid rgba(255,46,147,0.3); box-shadow: 0 10px 20px rgba(255,46,147,0.1);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF2E93" stroke-width="2">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-3 tracking-tight">Holistic Analysis</h3>
+        <p class="text-slate-400 leading-relaxed">We don't just look at blood pressure. We analyze 21 interconnected
+          lifestyle, dietary, and demographic factors.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="premium-card reveal" style="transition-delay: 0.2s;">
+        <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
+          style="background:linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.05)); border:1px solid rgba(6,182,212,0.3); box-shadow: 0 10px 20px rgba(6,182,212,0.1);">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" y1="13" x2="8" y2="13" />
+            <line x1="16" y1="17" x2="8" y2="17" />
+            <polyline points="10 9 9 9 8 9" />
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-3 tracking-tight">Actionable Reports</h3>
+        <p class="text-slate-400 leading-relaxed">Receive a beautiful, comprehensive dashboard with your risk score,
+          radar charts, and personalized preventive steps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== JOURNEY ======== -->
+<section class="py-24 relative z-10 px-4">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4 font-display">Four Steps to Clarity</h2>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-6 relative">
+      <!-- Connecting Line -->
+      <div
+        class="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20">
+      </div>
+
+      {% for num, title, desc in [
+      ('01', 'Complete Profile', 'Fill out a secure form regarding your health metrics and habits.'),
+      ('02', 'AI Processing', 'Our model normalizes and evaluates your data matrix instantly.'),
+      ('03', 'View Results', 'See your risk level visually mapped across all health vectors.'),
+      ('04', 'Take Action', 'Follow tailored guidelines to optimize your preventative health.')
+      ] %}
+      <div class="relative pt-8 text-center reveal glow-border group"
+        style="transition-delay: {{ loop.index0 * 100 }}ms;">
+        <div
+          class="w-10 h-10 rounded-full bg-slate-900 border-2 border-slate-700 mx-auto mb-6 flex items-center justify-center text-sm font-bold text-slate-400 relative z-10 group-hover:border-purple-500 group-hover:text-purple-400 transition-colors bg-[#0B0716]">
+          {{ num }}
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">{{ title }}</h3>
+        <p class="text-sm text-slate-400 leading-relaxed">{{ desc }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ======== CALL TO ACTION ======== -->
+<section class="py-32 relative z-10 px-4 mb-10">
+  <div class="max-w-5xl mx-auto">
+    <div class="premium-card text-center p-12 lg:p-20 reveal"
+      style="background: linear-gradient(180deg, rgba(124,58,237,0.1) 0%, rgba(20,15,35,0.4) 100%);">
+      <div
+        class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-tr from-purple-600 to-pink-500 mb-8 shadow-[0_0_40px_rgba(255,46,147,0.3)]">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+      <h2 class="text-4xl lg:text-6xl font-black text-white mb-6 font-display tracking-tight">Ready to Know?</h2>
+      <p class="text-slate-400 text-lg lg:text-xl mb-12 max-w-2xl mx-auto font-light">
+        Empower yourself with predictive intelligence. Understanding your risk is the first step toward long-term
+        prevention.
+      </p>
+      <a href="/predict" class="btn-premium" style="transform: scale(1.1);">
+        Begin Assessment Now
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // ===== PREMIUM WARP SPEED STARFIELD =====
+  (function () {
+    var canvas = document.getElementById('starfield');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var W, H, cx, cy;
+    var stars = [];
+    var STAR_COUNT = 400; // Increased for richer look
+    var BASE_SPEED = 2; // Slower base speed for elegance
+    var mouseX = 0, mouseY = 0;
+    var targetX = 0, targetY = 0;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+      cx = W / 2;
+      cy = H / 2;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Smooth mouse parallax interpolation
+    document.addEventListener('mousemove', function (e) {
+      targetX = (e.clientX / W - 0.5) * 2;
+      targetY = (e.clientY / H - 0.5) * 2;
+    });
+
+    function Star() { this.reset(); this.z = Math.random() * W; }
+
+    Star.prototype.reset = function () {
+      this.x = (Math.random() - 0.5) * W * 2;
+      this.y = (Math.random() - 0.5) * H * 2;
+      this.z = W;
+      this.pz = this.z;
+
+      // Premium Palette: Deep purple, hot pink, cyan, and stark white
+      var chance = Math.random();
+      if (chance < 0.1) { this.r = 255; this.g = 255; this.b = 255; } // White
+      else if (chance < 0.4) { this.r = 6; this.g = 182; this.b = 212; } // Cyan
+      else if (chance < 0.7) { this.r = 255; this.g = 46; this.b = 147; } // Pink
+      else { this.r = 124; this.g = 58; this.b = 237; } // Purple
+    };
+
+    Star.prototype.update = function () {
+      this.pz = this.z;
+      // Accelerate slightly as they get closer
+      var speed = BASE_SPEED + (1 - this.z / W) * 4;
+      this.z -= speed;
+
+      // Apply drift
+      this.x -= mouseX * 0.5;
+      this.y -= mouseY * 0.5;
+
+      if (this.z < 1) this.reset();
+    };
+
+    Star.prototype.draw = function () {
+      var sx = (this.x / this.z) * cx + cx;
+      var sy = (this.y / this.z) * cy + cy;
+      var px = (this.x / this.pz) * cx + cx;
+      var py = (this.y / this.pz) * cy + cy;
+
+      if (sx < 0 || sx > W || sy < 0 || sy > H) return;
+
+      var size = (1 - this.z / W) * 2.5;
+      var alpha = (1 - this.z / W);
+
+      // Trail
+      ctx.beginPath();
+      ctx.moveTo(px, py);
+      ctx.lineTo(sx, sy);
+      ctx.strokeStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + (alpha * 0.6) + ')';
+      ctx.lineWidth = size * 0.8;
+      ctx.stroke();
+
+      // Core
+      ctx.beginPath();
+      ctx.arc(sx, sy, size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
+      ctx.fill();
+
+      // Glare
+      if (size > 1.2) {
+        ctx.beginPath();
+        ctx.arc(sx, sy, size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + (alpha * 0.15) + ')';
+        ctx.fill();
+      }
+    };
+
+    for (var i = 0; i < STAR_COUNT; i++) stars.push(new Star());
+
+    function animate() {
+      // Smooth mouse interpolation
+      mouseX += (targetX - mouseX) * 0.05;
+      mouseY += (targetY - mouseY) * 0.05;
+
+      // Deep space background with slight trail fade
+      ctx.fillStyle = 'rgba(11, 7, 22, 0.3)';
+      ctx.fillRect(0, 0, W, H);
+
+      for (var i = 0; i < stars.length; i++) {
+        stars[i].update();
+        stars[i].draw();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    ctx.fillStyle = '#0B0716';
+    ctx.fillRect(0, 0, W, H);
+    animate();
+  })();
+
+  // ===== Smooth Counter Animation =====
+  var counters = document.querySelectorAll('.counter');
+  var counterObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var el = entry.target;
+        var target = parseInt(el.dataset.target);
+        var current = 0;
+        // Easing curve simulation
+        var timer = setInterval(function () {
+          var increment = (target - current) * 0.1;
+          if (increment < 0.5) increment = 0.5;
+          current += increment;
+
+          if (current >= target) {
+            el.textContent = target;
+            clearInterval(timer);
+          } else {
+            el.textContent = Math.floor(current);
+          }
+        }, 30);
+        counterObs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(function (c) { counterObs.observe(c); });
+</script>
+{% endblock %}
